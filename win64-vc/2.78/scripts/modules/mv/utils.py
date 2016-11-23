@@ -124,11 +124,10 @@ def delete_obj_list(obj_list):
         if obj.name in bpy.context.scene.objects:
             bpy.context.scene.objects.unlink(obj)
 
-#     TODO: I HAVE HAD PROBLEMS WITH THIS CRASHING BLENDER    
-#           FIGURE OUT HOW TO REMOVE DATA FROM THE BLEND FILE.
-#     for obj in obj_list:
-#         obj.user_clear()
-#         bpy.data.objects.remove(obj)
+#   I HAVE HAD PROBLEMS WITH THIS CRASHING BLENDER    
+#   HOPEFULLY THE do_unlink PARAMETER WORKS
+    for obj in obj_list:
+        bpy.data.objects.remove(obj,do_unlink=True)
         
 def delete_object_and_children(obj_bp):
     """ Deletes a object and all it's children
