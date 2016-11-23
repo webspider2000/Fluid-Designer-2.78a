@@ -1470,6 +1470,9 @@ class fd_object(PropertyGroup):
     update_id = StringProperty(name="Update ID",
                              description="This property allows a product to be updated after drawing. This is the operator bl_id.")
 
+    drop_id = StringProperty(name="Drop ID",
+                             description="This property allows a product to have a custom drop operator. This is the operator bl_id.")
+
     name_object = StringProperty(name="Object Name",
                                  description="This is the readable name of the object")
     

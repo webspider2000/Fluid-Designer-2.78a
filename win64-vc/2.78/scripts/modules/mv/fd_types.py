@@ -40,6 +40,10 @@ class Assembly():
                       This is the bl_id property  """
     update_id = ""    
     
+    """ Type:string - The Operator ID that should be called when dropping this assembly into the scene
+                      This is the bl_id property  """
+    drop_id = ""        
+    
     """ Type:dictionary - The list of prompts to overwrite when creating this assembly
                           key = prompt name
                           value = prompt value  """
@@ -1157,6 +1161,7 @@ class Assembly():
         self.obj_bp.mv.class_name = self.__class__.__name__
         self.obj_bp.mv.plan_draw_id = self.plan_draw_id
         self.obj_bp.mv.update_id = self.update_id
+        self.obj_bp.mv.drop_id = self.drop_id
         utils.set_property_id(self.obj_bp,self.property_id)
         self.x_dim(value = self.width)
         self.y_dim(value = -self.depth if self.mirror_y else self.depth)

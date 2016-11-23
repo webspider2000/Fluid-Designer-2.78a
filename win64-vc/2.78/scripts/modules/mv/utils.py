@@ -658,6 +658,16 @@ def get_product_class_name(class_name):
     name = class_name.replace("PRODUCT_","")
     return name.replace("_"," ")
 
+def set_wireframe(obj,make_wire=True):
+    obj.show_x_ray = make_wire
+    if make_wire:
+        obj.draw_type = 'WIRE'
+    else:
+        obj.draw_type = 'TEXTURED'
+        assign_materials_from_pointers(obj)
+    for child in obj.children:
+        set_wireframe(child, make_wire)
+
 #-------MATH FUNCTIONS
 def calc_distance(point1,point2):
     """ This gets the distance between two points (X,Y,Z)

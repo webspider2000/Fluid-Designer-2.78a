@@ -152,7 +152,7 @@ class OPS_drop_product(Operator):
             else:
                 self.product.draw()
                 self.product.update()
-
+                    
             utils.init_objects(self.product.obj_bp)
             self.default_z_loc = self.product.obj_bp.location.z
             self.default_height = self.product.obj_z.location.z
@@ -171,10 +171,13 @@ class OPS_drop_product(Operator):
         context.window.cursor_set('WAIT')
         self.draw_floor(context)
 #         selected_point, selected_obj = utils.get_selection_point(context,event)
-        self.get_product(context)
+        self.get_product(context)     
         if self.product is None:
             bpy.ops.fd_general.error('INVOKE_DEFAULT',message="Could Not Find Product Class: " + "\\" + self.library_name + "\\" + self.category_name + "\\" + self.product_name)
             return {'CANCELLED'}
+        if self.product.obj_bp.mv.drop_id != "":
+            eval('bpy.ops.' + self.product.obj_bp.mv.drop_id + '("INVOKE_DEFAULT",object_name=self.product.obj_bp.name)')
+            return {'FINISHED'}
         context.window.cursor_set('PAINT_BRUSH')
         context.scene.update() # THE SCENE MUST BE UPDATED FOR RAY CAST TO WORK
         context.window_manager.modal_handler_add(self)
