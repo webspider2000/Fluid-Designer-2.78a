@@ -29,6 +29,7 @@ bl_info = {
 }
 
 import bpy
+from mv import utils
 
 class PANEL_Scene_Optimization(bpy.types.Panel):
     bl_space_type = "VIEW_3D"
@@ -49,6 +50,7 @@ class PANEL_Scene_Optimization(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         layout.operator('fd_scene_optimization.clear_all_materials_from_file',icon='MATERIAL')
+        layout.operator('fd_scene_optimization.clear_all_drivers',icon='ANIM_DATA')
 
 class OPERATOR_Clear_All_Materials_From_File(bpy.types.Operator):
     bl_idname = "fd_scene_optimization.clear_all_materials_from_file"
@@ -69,13 +71,45 @@ class OPERATOR_Clear_All_Materials_From_File(bpy.types.Operator):
             bpy.data.images.remove(image)
         return{'FINISHED'}
 
+class OPERATOR_Clear_All_Drivers(bpy.types.Operator):
+    bl_idname = "fd_scene_optimization.clear_all_drivers"
+    bl_label = "Clear All Python Drivers"
+    bl_options = {'UNDO'}
+    
+    def execute(self,context):
+        
+        delete_objs = []
+        
+        for obj in context.scene.objects:
+            if obj.animation_data:
+                for driver in obj.animation_data.drivers:
+                    obj.driver_remove(driver.data_path)
+            obj.select = True
+            context.scene.objects.active = obj
+
+            for mod in obj.modifiers:
+                bpy.ops.object.modifier_apply(apply_as='DATA',modifier=mod.name)
+
+            obj.lock_location = (False,False,False)
+            obj.lock_scale = (False,False,False)
+            obj.lock_rotation = (False,False,False)
+            
+            if obj.mv.type in {'CAGE','VPDIMX','VPDIMY','VPDIMZ'}:
+                delete_objs.append(obj)
+                
+        utils.delete_obj_list(delete_objs)
+
+        return{'FINISHED'}
+
 def register():
     bpy.utils.register_class(PANEL_Scene_Optimization)
     bpy.utils.register_class(OPERATOR_Clear_All_Materials_From_File)
+    bpy.utils.register_class(OPERATOR_Clear_All_Drivers)
 
 def unregister():
     bpy.utils.unregister_class(PANEL_Scene_Optimization)
     bpy.utils.unregister_class(OPERATOR_Clear_All_Materials_From_File)
+    bpy.utils.unregister_class(OPERATOR_Clear_All_Drivers)
 
 if __name__ == "__main__":
     register()
