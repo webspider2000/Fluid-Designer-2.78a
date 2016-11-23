@@ -855,9 +855,17 @@ def save_assembly(assembly,path):
     bpy.ops.wm.save_as_mainfile(filepath=os.path.join(path,assembly.assembly_name + ".blend"))
 
 def render_assembly(assembly,path):
-
-    rendering_space = unit.inch(5)
- 
+    
+    area = math.fabs(assembly.obj_x.location.x) + math.fabs(assembly.obj_y.location.y) + math.fabs(assembly.obj_z.location.z)
+    
+    if area == 0:
+        # This is used for products that have a base point at the center (faucets)
+        # It would be better to develop a way to create a cube that boarders
+        # all of the objects and not look to the assembly size.
+        rendering_space = unit.inch(0)
+    else:
+        rendering_space = unit.inch(5)
+  
     render_box = create_cube_mesh("Render Box",(assembly.obj_x.location.x + rendering_space,
                                                 assembly.obj_y.location.y - rendering_space,
                                                 assembly.obj_z.location.z + rendering_space))
@@ -865,7 +873,7 @@ def render_assembly(assembly,path):
     render_box.location.x = assembly.obj_bp.location.x - (rendering_space/2)
     render_box.location.y = assembly.obj_bp.location.y + (rendering_space/2)
     render_box.location.z = assembly.obj_bp.location.z - (rendering_space/2)
-    
+     
     render_box.select = True
     
     for child in get_child_objects(assembly.obj_bp):
