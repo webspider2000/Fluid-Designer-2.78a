@@ -632,16 +632,16 @@ def get_object(path):
         for file in os.listdir(directory_path):
             file_name, file_ext = os.path.splitext(file)
             if file_ext == '.blend':
-                print("Searching: " + os.path.join(directory_path,file)) #PRINT STATEMENT FOR DEBUG. THIS COULD BE SLOWER IF SEARCHING MANY FILES!
-                with bpy.data.libraries.load(os.path.join(directory_path,file), False, False) as (data_from, data_to):
-                    for obj in data_from.objects:
+                print("Searching: " + os.path.join(directory_path,file) + " for " + object_name) #PRINT STATEMENT FOR DEBUG. THIS COULD BE SLOWER IF SEARCHING MANY FILES!
+                with bpy.data.libraries.load(os.path.join(directory_path,file), False, False) as (data_from_1, data_to_1):
+                    for obj in data_from_1.objects:
                         if obj == object_name:
-                            data_to.objects = [obj]
+                            data_to_1.objects = [obj]
                             break
-    
-    for obj in data_to.objects:
-        link_objects_to_scene(obj,bpy.context.scene)
-        return obj
+                        
+                for obj in data_to_1.objects:
+                    link_objects_to_scene(obj,bpy.context.scene)
+                    return obj
 
 def get_wall_bp(obj):
     """ This will get the wall base point from the passed in object
