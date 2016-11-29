@@ -626,6 +626,9 @@ def get_object(path):
             for obj in data_from.objects:
                 data_to.objects = [obj]
                 break
+        for obj in data_to.objects:
+            link_objects_to_scene(obj,bpy.context.scene)
+            return obj
     else: # LOOK IN EVERY BLEND FILE IN THE SAME DIRECTORY FOR AN OBJECT NAME == FILE NAME
         directory_path = os.path.dirname(path)
         object_name, ext = os.path.splitext(os.path.basename(path))
