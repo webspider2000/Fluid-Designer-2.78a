@@ -271,16 +271,7 @@ class mvPrompt(bpy.types.PropertyGroup):
                 'CHECKBOX':"CheckBoxValue",'TEXT':"TextValue",'DISTANCE':"DistanceValue",\
                 'ANGLE':"AngleValue",'PERCENTAGE':"PercentageValue",'PRICE':"PriceValue"} #DELETE
     
-    def draw_prompt(self,layout,data,allow_edit=True,text="",split_text=True):
-        data_type = 'OBJECT' #SETS DEFAULT
-        
-        if data is bpy.types.Scene:
-            data_type = 'SCENE'
-        elif data is bpy.types.Material:
-            data_type = 'MATERIAL'
-        elif data is bpy.types.World:
-            data_type = 'WORLD'
-        
+    def draw_prompt(self,layout,allow_edit=False,text="",split_text=True):
         row = layout.row()
         if text != "":
             prompt_text = text
@@ -334,7 +325,7 @@ class mvPrompt(bpy.types.PropertyGroup):
                 if allow_edit:
                     prop = row.operator("fd_prompts.add_combo_box_option",icon='ZOOMIN',text="")
                     prop.prompt_name = self.name
-                    prop.data_name = data.name
+                    prop.data_name = self.id_data.name
                 col = layout.column()
                 col.template_list("FD_UL_combobox"," ", self, "COL_EnumItem", self, "EnumIndex",rows=len(self.COL_EnumItem)/self.columns,type='GRID',columns=self.columns)
         
@@ -353,13 +344,11 @@ class mvPrompt(bpy.types.PropertyGroup):
         if allow_edit:
             props = row.operator("fd_prompts.show_prompt_properties",text="",icon='INFO')
             props.prompt_name = self.name
-            props.data_type = data_type
-            props.data_name = data.name
+            props.data_name = self.id_data.name
             
             props = row.operator("fd_prompts.delete_prompt",icon='X',text="")
             props.prompt_name = self.name
-            props.data_type = data_type
-            props.data_name = data.name
+            props.data_name = self.id_data.name
         
     def draw_calculation_prompt(self,layout,data,allow_edit=True):
         row = layout.row()
@@ -561,27 +550,18 @@ class mvPromptPage(bpy.types.PropertyGroup):
         Prompt = self.COL_Prompt[self.PromptIndex]
         Prompt.DrawPrompt(layout,obj=None,AllowEdit=False)
 
-    def draw_prompt_page(self,layout,data,allow_edit=True):
-        datatype = 'OBJECT'
-        if type(data) is bpy.types.Scene:
-            datatype = 'SCENE'
-        elif type(data) is bpy.types.Material:
-            datatype = 'MATERIAL'
-        elif type(data) is bpy.types.World:
-            datatype = 'WORLD'
+    def draw_prompt_page(self,layout,allow_edit=True):
+
         row = layout.row(align=True)
         if allow_edit:
             props = row.operator("fd_prompts.add_main_tab",text="Add Tab",icon='SPLITSCREEN')
-            props.data_type = datatype
-            props.data_name = data.name
+            props.data_name = self.id_data.name
         if len(self.COL_MainTab) > 0:
             if allow_edit:
                 props1 = row.operator("fd_prompts.rename_main_tab",text="Rename Tab",icon='GREASEPENCIL')
-                props1.data_type = datatype
-                props1.data_name = data.name
+                props1.data_name = self.id_data.name
                 props2 = row.operator("fd_prompts.delete_main_tab",text="Delete Tab",icon='X')
-                props2.data_type = datatype
-                props2.data_name = data.name
+                props2.data_name = self.id_data.name
                 
             layout.template_list("FD_UL_prompttabs"," ", self, "COL_MainTab", self, "MainTabIndex",rows=len(self.COL_MainTab),type='DEFAULT')
             box = layout.box()
@@ -591,22 +571,19 @@ class mvPromptPage(bpy.types.PropertyGroup):
                 row.prop(tab,'calculator_type',text='')
                 row.prop(tab,'calculator_deduction',text='Deduction')
                 props3 = box.operator("fd_prompts.add_calculation_prompt",text="Add Calculation Variable",icon='UI')
-                props3.data_type = datatype
-                props3.data_name = data.name
+                props3.data_name = self.id_data.name
                 for prompt in self.COL_Prompt:
                     if prompt.TabIndex == self.MainTabIndex:
-                        prompt.draw_calculation_prompt(box,data,allow_edit)
+                        prompt.draw_calculation_prompt(box,self.id_data,allow_edit)
                 props3 = box.operator("fd_prompts.run_calculator",text="Calculate")
-                props3.data_type = datatype
-                props3.data_name = data.name
+                props3.data_name = self.id_data.name
                 props3.tab_index = self.MainTabIndex
             else:
                 props3 = box.operator("fd_prompts.add_prompt",text="Add Prompt",icon='UI')
-                props3.data_type = datatype
-                props3.data_name = data.name
+                props3.data_name = self.id_data.name
                 for prompt in self.COL_Prompt:
                     if prompt.TabIndex == self.MainTabIndex:
-                        prompt.draw_prompt(box,data,allow_edit)
+                        prompt.draw_prompt(box,allow_edit)
 
     def show_prompts(self,layout,obj,index,tab_name=""):
         #If the tab_name is passed in set the index
@@ -627,7 +604,7 @@ class mvPromptPage(bpy.types.PropertyGroup):
         else:
             for Prompt in self.COL_Prompt:
                 if Prompt.TabIndex == index:
-                    Prompt.draw_prompt(layout,obj,allow_edit=False)
+                    Prompt.draw_prompt(layout,allow_edit=False)
                     
 bpy.utils.register_class(mvPromptPage)
 

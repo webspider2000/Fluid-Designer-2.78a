@@ -770,7 +770,7 @@ def run_calculators(obj_bp):
     """
     for index, page in enumerate(obj_bp.mv.PromptPage.COL_MainTab):
         if page.type == 'CALCULATOR':
-            bpy.ops.fd_prompts.run_calculator(tab_index=index,data_name=obj_bp.name,data_type='OBJECT')
+            bpy.ops.fd_prompts.run_calculator(tab_index=index,data_name=obj_bp.name)
     for child in obj_bp.children:
         if child.mv.type == 'BPASSEMBLY':
             run_calculators(child)

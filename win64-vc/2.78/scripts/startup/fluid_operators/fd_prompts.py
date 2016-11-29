@@ -52,41 +52,19 @@ class OPS_add_prompt(Operator):
     prompt_name = StringProperty(name="Prompt Name",default = "New Prompt")
     prompt_type = EnumProperty(name="Prompt Type",items=enum_prompt_types)
     data_name = StringProperty(name="Data Name")
-    data_type = StringProperty(name="Data Type",default = 'OBJECT')
+#     data_type = StringProperty(name="Data Type",default = 'OBJECT')
     
     @classmethod
     def poll(cls, context):
         return True
 
     def execute(self, context):
-        if self.data_type == 'OBJECT':
-            obj = bpy.data.objects[self.data_name]
-            if self.prompt_name not in obj.mv.PromptPage.COL_Prompt:
-                prompt = obj.mv.PromptPage.add_prompt(self.prompt_name,self.prompt_type,obj.name)
-                prompt.TabIndex = obj.mv.PromptPage.MainTabIndex
-            else:
-                bpy.ops.fd_general.error('INVOKE_DEFAULT',message='Prompt Already Exists')
-        elif self.data_type == 'SCENE':
-            obj = bpy.data.scenes[self.data_name]
-            if self.prompt_name not in obj.mv.PromptPage.COL_Prompt:
-                prompt = obj.mv.PromptPage.add_prompt(self.prompt_name,self.prompt_type,obj.name)
-                prompt.TabIndex = obj.mv.PromptPage.MainTabIndex
-            else:
-                bpy.ops.fd_general.error('INVOKE_DEFAULT',message='Prompt Already Exists')
-        elif self.data_type == 'MATERIAL':
-            obj = bpy.data.materials[self.data_name]
-            if self.prompt_name not in obj.mv.PromptPage.COL_Prompt:
-                prompt = obj.mv.PromptPage.add_prompt(self.prompt_name,self.prompt_type,obj.name)
-                prompt.TabIndex = obj.mv.PromptPage.MainTabIndex
-            else:
-                bpy.ops.fd_general.error('INVOKE_DEFAULT',message='Prompt Already Exists')
-        elif self.data_type == 'WORLD':
-            obj = bpy.data.worlds[self.data_name]
-            if self.prompt_name not in obj.mv.PromptPage.COL_Prompt:
-                prompt = obj.mv.PromptPage.add_prompt(self.prompt_name,self.prompt_type,obj.name)
-                prompt.TabIndex = obj.mv.PromptPage.MainTabIndex
-            else:
-                bpy.ops.fd_general.error('INVOKE_DEFAULT',message='Prompt Already Exists')
+        obj = bpy.data.objects[self.data_name]
+        if self.prompt_name not in obj.mv.PromptPage.COL_Prompt:
+            prompt = obj.mv.PromptPage.add_prompt(self.prompt_name,self.prompt_type,obj.name)
+            prompt.TabIndex = obj.mv.PromptPage.MainTabIndex
+        else:
+            bpy.ops.fd_general.error('INVOKE_DEFAULT',message='Prompt Already Exists')
         return {'FINISHED'}
 
     def invoke(self,context,event):
@@ -112,41 +90,20 @@ class OPS_add_calculation_prompt(Operator):
     prompt_name = StringProperty(name="Prompt Name",default = "New Prompt")
     prompt_type = EnumProperty(name="Prompt Type",items=enum_prompt_types)
     data_name = StringProperty(name="Data Name")
-    data_type = StringProperty(name="Data Type",default = 'OBJECT')
+#     data_type = StringProperty(name="Data Type",default = 'OBJECT')
     
     @classmethod
     def poll(cls, context):
         return True
 
     def execute(self, context):
-        if self.data_type == 'OBJECT':
-            obj = bpy.data.objects[self.data_name]
-            if self.prompt_name not in obj.mv.PromptPage.COL_Prompt:
-                prompt = obj.mv.PromptPage.add_prompt(self.prompt_name,'DISTANCE',obj.name)
-                prompt.TabIndex = obj.mv.PromptPage.MainTabIndex
-            else:
-                bpy.ops.fd_general.error('INVOKE_DEFAULT',message='Prompt Already Exists')
-        elif self.data_type == 'SCENE':
-            obj = bpy.data.scenes[self.data_name]
-            if self.prompt_name not in obj.mv.PromptPage.COL_Prompt:
-                prompt = obj.mv.PromptPage.add_prompt(self.prompt_name,'DISTANCE',obj.name)
-                prompt.TabIndex = obj.mv.PromptPage.MainTabIndex
-            else:
-                bpy.ops.fd_general.error('INVOKE_DEFAULT',message='Prompt Already Exists')
-        elif self.data_type == 'MATERIAL':
-            obj = bpy.data.materials[self.data_name]
-            if self.prompt_name not in obj.mv.PromptPage.COL_Prompt:
-                prompt = obj.mv.PromptPage.add_prompt(self.prompt_name,'DISTANCE',obj.name)
-                prompt.TabIndex = obj.mv.PromptPage.MainTabIndex
-            else:
-                bpy.ops.fd_general.error('INVOKE_DEFAULT',message='Prompt Already Exists')
-        elif self.data_type == 'WORLD':
-            obj = bpy.data.worlds[self.data_name]
-            if self.prompt_name not in obj.mv.PromptPage.COL_Prompt:
-                prompt = obj.mv.PromptPage.add_prompt(self.prompt_name,'DISTANCE',obj.name)
-                prompt.TabIndex = obj.mv.PromptPage.MainTabIndex
-            else:
-                bpy.ops.fd_general.error('INVOKE_DEFAULT',message='Prompt Already Exists')
+        obj = bpy.data.objects[self.data_name]
+        if self.prompt_name not in obj.mv.PromptPage.COL_Prompt:
+            prompt = obj.mv.PromptPage.add_prompt(self.prompt_name,'DISTANCE',obj.name)
+            prompt.TabIndex = obj.mv.PromptPage.MainTabIndex
+        else:
+            bpy.ops.fd_general.error('INVOKE_DEFAULT',message='Prompt Already Exists')
+
         return {'FINISHED'}
 
     def invoke(self,context,event):
@@ -170,7 +127,7 @@ class OPS_run_calculator(Operator):
     
     tab_index = IntProperty(name="Tab Index")
     data_name = StringProperty(name="Data Name")
-    data_type = StringProperty(name="Data Type",default = 'OBJECT')
+#     data_type = StringProperty(name="Data Type",default = 'OBJECT')
     
     @classmethod
     def poll(cls, context):
@@ -186,28 +143,27 @@ class OPS_run_calculator(Operator):
                 return child.location.z
             
     def execute(self, context):
-        if self.data_type == 'OBJECT':
-            obj = bpy.data.objects[self.data_name]
-            tab = obj.mv.PromptPage.COL_MainTab[self.tab_index]
-            size = self.get_size(tab, obj)
-            non_equal_prompts_total_value = 0
-            equal_prompt_qty = 0
-            calc_prompts = []
-            for prompt in obj.mv.PromptPage.COL_Prompt:
-                if prompt.TabIndex == self.tab_index:
-                    if prompt.equal:
-                        equal_prompt_qty += 1
-                        calc_prompts.append(prompt)
-                    else:
-                        non_equal_prompts_total_value += prompt.DistanceValue
-                        
-            if equal_prompt_qty > 0:
-                prompt_value = (size - tab.calculator_deduction - non_equal_prompts_total_value) / equal_prompt_qty
-                
-                for prompt in calc_prompts:
-                    prompt.DistanceValue = prompt_value
+        obj = bpy.data.objects[self.data_name]
+        tab = obj.mv.PromptPage.COL_MainTab[self.tab_index]
+        size = self.get_size(tab, obj)
+        non_equal_prompts_total_value = 0
+        equal_prompt_qty = 0
+        calc_prompts = []
+        for prompt in obj.mv.PromptPage.COL_Prompt:
+            if prompt.TabIndex == self.tab_index:
+                if prompt.equal:
+                    equal_prompt_qty += 1
+                    calc_prompts.append(prompt)
+                else:
+                    non_equal_prompts_total_value += prompt.DistanceValue
                     
-                obj.location = obj.location
+        if equal_prompt_qty > 0:
+            prompt_value = (size - tab.calculator_deduction - non_equal_prompts_total_value) / equal_prompt_qty
+            
+            for prompt in calc_prompts:
+                prompt.DistanceValue = prompt_value
+                
+            obj.location = obj.location
                 
         return {'FINISHED'}
 
@@ -218,28 +174,18 @@ class OPS_delete_prompt(Operator):
     
     prompt_name = StringProperty(name="Prompt Name",default = "New Prompt")
     data_name = StringProperty(name="Data Name")
-    data_type = StringProperty(name="Data Type",default = 'OBJECT')
+#     data_type = StringProperty(name="Data Type",default = 'OBJECT')
     
     @classmethod
     def poll(cls, context):
         return True
 
     def execute(self, context):
-        if self.data_type == 'OBJECT':
-            obj = bpy.data.objects[self.data_name]
-            obj.mv.PromptPage.delete_prompt(self.prompt_name)
-        elif self.data_type == 'SCENE':
-            obj = bpy.data.scenes[self.data_name]
-            obj.mv.PromptPage.delete_prompt(self.prompt_name)
-        elif self.data_type == 'MATERIAL':
-            obj = bpy.data.materials[self.data_name]
-            obj.mv.PromptPage.delete_prompt(self.prompt_name)
-        elif self.data_type == 'WORLD':
-            obj = bpy.data.worlds[self.data_name]
-            obj.mv.PromptPage.delete_prompt(self.prompt_name)
+        obj = bpy.data.objects[self.data_name]
+        obj.mv.PromptPage.delete_prompt(self.prompt_name)
         return {'FINISHED'}
 
-    def invoke(self,context,event):    
+    def invoke(self,context,event):
         wm = context.window_manager
         return wm.invoke_props_dialog(self, width=utils.get_prop_dialog_width(380))
 
@@ -289,7 +235,7 @@ class OPS_rename_prompt(Operator):
     data_name = StringProperty(name="Data Name")
     old_name = StringProperty(name="Old Name",default="Old Name")
     new_name = StringProperty(name="New Name",default="Enter New Name")
-    data_type = StringProperty(name="Data Type",default = 'OBJECT')
+#     data_type = StringProperty(name="Data Type",default = 'OBJECT')
     
     @classmethod
     def poll(cls, context):
@@ -325,25 +271,15 @@ class OPS_rename_main_tab(Operator):
 
     data_name = StringProperty(name="Data Name")
     new_name = StringProperty(name="New Name",default="Enter New Name")
-    data_type = StringProperty(name="Data Type",default = 'OBJECT')
+#     data_type = StringProperty(name="Data Type",default = 'OBJECT')
     
     @classmethod
     def poll(cls, context):
         return True
 
     def execute(self, context):
-        if self.data_type == 'OBJECT':
-            data = bpy.data.objects[self.data_name]
-            data.mv.PromptPage.rename_selected_tab(self.new_name)
-        elif self.data_type == 'SCENE':
-            data = bpy.data.scenes[self.data_name]
-            data.mv.PromptPage.rename_selected_tab(self.new_name)
-        elif self.data_type == 'MATERIAL':
-            data = bpy.data.materials[self.data_name]
-            data.mv.PromptPage.rename_selected_tab(self.new_name)
-        elif self.data_type == 'WORLD':
-            data = bpy.data.worlds[self.data_name]
-            data.mv.PromptPage.rename_selected_tab(self.new_name)
+        data = bpy.data.objects[self.data_name]
+        data.mv.PromptPage.rename_selected_tab(self.new_name)
         return {'FINISHED'}
 
     def invoke(self,context,event):    
@@ -361,7 +297,7 @@ class OPS_show_prompt_properties(Operator):
     prompt_name = StringProperty(name="Prompt Name",default = "New Prompt")
     prompt_type = EnumProperty(name="Prompt Type",items=enum_prompt_types)
     data_name = StringProperty(name="Data Name")
-    data_type = StringProperty(name="Data Type",default = 'OBJECT')
+#     data_type = StringProperty(name="Data Type",default = 'OBJECT')
     
     @classmethod
     def poll(cls, context):
@@ -376,18 +312,8 @@ class OPS_show_prompt_properties(Operator):
 
     def draw(self, context):
         layout = self.layout
-        if self.data_type == 'OBJECT':
-            data = bpy.data.objects[self.data_name]
-            data.mv.PromptPage.COL_Prompt[self.prompt_name].draw_prompt_properties(layout,data.name)
-        elif self.data_type == 'SCENE':
-            data = bpy.data.scenes[self.data_name]
-            data.mv.PromptPage.COL_Prompt[self.prompt_name].draw_prompt_properties(layout,data.name)
-        elif self.data_type == 'MATERIAL':
-            data = bpy.data.materials[self.data_name]
-            data.mv.PromptPage.COL_Prompt[self.prompt_name].draw_prompt_properties(layout,data.name)
-        elif self.data_type == 'WORLD':
-            data = bpy.data.worlds[self.data_name]
-            data.mv.PromptPage.COL_Prompt[self.prompt_name].draw_prompt_properties(layout,data.name)
+        data = bpy.data.objects[self.data_name]
+        data.mv.PromptPage.COL_Prompt[self.prompt_name].draw_prompt_properties(layout,data.name)
             
 class OPS_add_main_tab(Operator):
     bl_idname = "fd_prompts.add_main_tab"
@@ -397,56 +323,24 @@ class OPS_add_main_tab(Operator):
     tab_name = StringProperty(name="Tab Name",default="New Tab")
     tab_type = EnumProperty(name="Tab Type",items=enum_prompt_tab_types,default='VISIBLE')
     data_name = StringProperty(name="Data Name")
-    data_type = StringProperty(name="Data Type",default = 'OBJECT')
+#     data_type = StringProperty(name="Data Type",default = 'OBJECT')
 
     @classmethod
     def poll(cls, context):
         return True
 
     def execute(self, context):
-        if self.data_type == 'OBJECT':
-            data = bpy.data.objects[self.data_name]
-            data.mv.PromptPage.add_tab(self.tab_name,self.tab_type)
-        elif self.data_type == 'SCENE':
-            data = bpy.data.scenes[self.data_name]
-            data.mv.PromptPage.add_tab(self.tab_name,self.tab_type)
-        elif self.data_type == 'MATERIAL':
-            data = bpy.data.materials[self.data_name]
-            data.mv.PromptPage.add_tab(self.tab_name,self.tab_type)
-        elif self.data_type == 'WORLD':
-            data = bpy.data.worlds[self.data_name]
-            data.mv.PromptPage.add_tab(self.tab_name,self.tab_type)
+        data = bpy.data.objects[self.data_name]
+        data.mv.PromptPage.add_tab(self.tab_name,self.tab_type)
         return {'FINISHED'}
 
     def invoke(self,context,event):
         self.tab_name = "New Tab"
-        if self.data_type == 'OBJECT':
-            data = bpy.data.objects[self.data_name]
-            Counter = 1
-            while self.tab_name + " " + str(Counter) in data.mv.PromptPage.COL_MainTab:
-                Counter += 1
-            self.tab_name = self.tab_name + " " + str(Counter)
-            
-        elif self.data_type == 'SCENE':
-            data = bpy.data.scenes[self.data_name]
-            Counter = 1
-            while self.tab_name + " " + str(Counter) in data.mv.PromptPage.COL_MainTab:
-                Counter += 1
-            self.tab_name = self.tab_name + " " + str(Counter)
-            
-        elif self.data_type == 'MATERIAL':
-            data = bpy.data.materials[self.data_name]
-            Counter = 1
-            while self.tab_name + " " + str(Counter) in data.mv.PromptPage.COL_MainTab:
-                Counter += 1
-            self.tab_name = self.tab_name + " " + str(Counter)
-            
-        elif self.data_type == 'WORLD':
-            data = bpy.data.worlds[self.data_name]
-            Counter = 1
-            while self.tab_name + " " + str(Counter) in data.mv.PromptPage.COL_MainTab:
-                Counter += 1
-            self.tab_name = self.tab_name + " " + str(Counter)
+        data = bpy.data.objects[self.data_name]
+        Counter = 1
+        while self.tab_name + " " + str(Counter) in data.mv.PromptPage.COL_MainTab:
+            Counter += 1
+        self.tab_name = self.tab_name + " " + str(Counter)
             
         wm = context.window_manager
         return wm.invoke_props_dialog(self, width=utils.get_prop_dialog_width(380))
@@ -462,7 +356,7 @@ class OPS_add_combo_box_option(Operator):
     bl_options = {'UNDO'}
     
     data_name = StringProperty(name="Data Name")
-    data_type = StringProperty(name="Data Type",default = 'OBJECT')
+#     data_type = StringProperty(name="Data Type",default = 'OBJECT')
     prompt_name = StringProperty(name="Prompt Name")
     combo_box_value = StringProperty(name="Combo Box Value",default = "Option")
 
@@ -471,50 +365,19 @@ class OPS_add_combo_box_option(Operator):
         return True
 
     def execute(self, context):
-        if self.data_type == 'OBJECT':
-            data = bpy.data.objects[self.data_name]
-            data.mv.PromptPage.COL_Prompt[self.prompt_name].add_enum_item(self.combo_box_value)
-        elif self.data_type == 'SCENE':
-            data = bpy.data.scenes[self.data_name]
-            data.mv.PromptPage.COL_Prompt[self.prompt_name].add_enum_item(self.combo_box_value)
-        elif self.data_type == 'MATERIAL':
-            data = bpy.data.materials[self.data_name]
-            data.mv.PromptPage.COL_Prompt[self.prompt_name].add_enum_item(self.combo_box_value)
-        elif self.data_type == 'WORLD':
-            data = bpy.data.worlds[self.data_name]
-            data.mv.PromptPage.COL_Prompt[self.prompt_name].add_enum_item(self.combo_box_value)
+        data = bpy.data.objects[self.data_name]
+        data.mv.PromptPage.COL_Prompt[self.prompt_name].add_enum_item(self.combo_box_value)
         return {'FINISHED'}
 
     def invoke(self,context,event):
         self.combo_box_value = "Option"
-        if self.data_type == 'OBJECT':
-            data = bpy.data.objects[self.data_name]
-            Counter = 1
-            while self.combo_box_value + " " + str(Counter) in data.mv.PromptPage.COL_Prompt[self.prompt_name].COL_EnumItem:
-                Counter += 1
-            self.combo_box_value = self.combo_box_value + " " + str(Counter)
-            
-        elif self.data_type == 'SCENE':
-            data = bpy.data.scenes[self.data_name]
-            Counter = 1
-            while self.combo_box_value + " " + str(Counter) in data.mv.PromptPage.COL_Prompt[self.prompt_name].COL_EnumItem:
-                Counter += 1
-            self.combo_box_value = self.combo_box_value + " " + str(Counter)
-            
-        elif self.data_type == 'MATERIAL':
-            data = bpy.data.materials[self.data_name]
-            Counter = 1
-            while self.combo_box_value + " " + str(Counter) in data.mv.PromptPage.COL_Prompt[self.prompt_name].COL_EnumItem:
-                Counter += 1
-            self.combo_box_value = self.combo_box_value + " " + str(Counter)   
-            
-        elif self.data_type == 'WORLD':
-            data = bpy.data.worlds[self.data_name]
-            Counter = 1
-            while self.combo_box_value + " " + str(Counter) in data.mv.PromptPage.COL_Prompt[self.prompt_name].COL_EnumItem:
-                Counter += 1
-            self.combo_box_value = self.combo_box_value + " " + str(Counter)   
-            
+
+        data = bpy.data.objects[self.data_name]
+        Counter = 1
+        while self.combo_box_value + " " + str(Counter) in data.mv.PromptPage.COL_Prompt[self.prompt_name].COL_EnumItem:
+            Counter += 1
+        self.combo_box_value = self.combo_box_value + " " + str(Counter)
+
         wm = context.window_manager
         return wm.invoke_props_dialog(self, width=utils.get_prop_dialog_width(380))
 
@@ -529,7 +392,6 @@ class OPS_update_formulas_w_new_prompt_type(Operator):
 
     data_name = StringProperty(name="Data Name")
     name = StringProperty(name="Old Name",default="Old Name")
-    data_type = StringProperty(name="Data Type",default = 'OBJECT')
     new_type = StringProperty(name="Prompt Type")
 
     def execute(self, context):
