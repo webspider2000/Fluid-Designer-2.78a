@@ -109,7 +109,6 @@ def delete_obj_list(obj_list):
     """ This function deletes every object in the list
     """
     bpy.ops.object.select_all(action='DESELECT')
-    
     for obj in obj_list:
         if obj.animation_data:
             for driver in obj.animation_data.drivers:
@@ -124,7 +123,7 @@ def delete_obj_list(obj_list):
         if obj.name in bpy.context.scene.objects:
             bpy.context.scene.objects.unlink(obj)
 
-#   I HAVE HAD PROBLEMS WITH THIS CRASHING BLENDER    
+#   I HAVE HAD PROBLEMS WITH THIS CRASHING BLENDER
 #   HOPEFULLY THE do_unlink PARAMETER WORKS
     for obj in obj_list:
         bpy.data.objects.remove(obj,do_unlink=True)
@@ -145,16 +144,13 @@ def link_objects_to_scene(obj_bp,scene):
     """ This Function links an object and all of it's children
         to the scene
     """
+    obj_bp.draw_type = 'WIRE' #THIS IS NEEDED FOR DRAG AND DROP
+    obj_bp.select = False
     scene.objects.link(obj_bp)
+    if obj_bp.type == 'EMPTY':
+        obj_bp.hide = True
     for child in obj_bp.children:
-        child.draw_type = 'WIRE' #THIS IS USED FOR DRAG AND DROP
-        child.select = False
-        if len(child.children) > 0:
-            link_objects_to_scene(child,scene)
-        else:
-            scene.objects.link(child)
-            if child.type == 'EMPTY':
-                child.hide = True
+        link_objects_to_scene(child,scene)
 
 def create_vertex_group_for_hooks(obj_mesh,vert_list,vgroupname):
     """ Adds a new vertex group to a mesh. If the group already exists
@@ -615,6 +611,21 @@ def get_group(path):
             break
 
     for grp in data_to.groups:
+        """
+        THIS IS A HACK 
+        In Blender 2.78a if an object has a reference to a shape key
+        the object is not appended it is linked. If an object is linked 
+        it can cause errors trying to link duplicate objects into the scene. If a 
+        library is found on an object we make objects local. 
+        Unfortunetly we have to make 'ALL' local becuase selected objects doens't work
+        when the linked object has hide_select turned on. 
+        """
+        for obj in grp.objects:
+            if obj.library:
+                bpy.ops.object.make_local(type='ALL')      
+        """
+        END HACK
+        """
         obj_bp = get_assembly_bp(grp.objects[0])
         link_objects_to_scene(obj_bp,bpy.context.scene)
         bpy.data.groups.remove(grp,do_unlink=True)

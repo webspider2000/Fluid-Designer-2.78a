@@ -763,9 +763,25 @@ class Assembly():
                 break
 
         for grp in data_to.groups:
+            """
+            THIS IS A HACK 
+            In Blender 2.78a if an object has a reference to a shape key
+            the object is not appended it is linked. If an object is linked 
+            it can cause errors trying to link duplicate objects into the scene. If a 
+            library is found on an object we make objects local. 
+            Unfortunetly we have to make 'ALL' local becuase selected objects doens't work
+            when the linked object has hide_select turned on. 
+            """
+            for obj in grp.objects:
+                if obj.library:
+                    bpy.ops.object.make_local(type='ALL')      
+            """
+            END HACK
+            """
             part = Part(utils.get_assembly_bp(grp.objects[0]))
             part.obj_bp.parent = self.obj_bp
             utils.link_objects_to_scene(part.obj_bp,bpy.context.scene)
+
             bpy.data.groups.remove(grp,do_unlink=True)
             return part
 
