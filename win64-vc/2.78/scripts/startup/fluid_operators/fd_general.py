@@ -634,6 +634,8 @@ class OPS_drop_assembly(Operator):
             print("NO BP FOODNDOS")
     
     def invoke(self, context, event):
+        self.cages = []
+        self.machining_objs = []
         self.get_assembly(context)
 
         context.window.cursor_set('PAINT_BRUSH')
