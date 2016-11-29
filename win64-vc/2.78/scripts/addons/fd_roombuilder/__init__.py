@@ -1464,6 +1464,7 @@ def unregister():
     bpy.utils.unregister_class(FD_UL_walls)
     bpy.utils.unregister_class(FD_UL_obstacles)
     
+    bpy.utils.unregister_class(OPERATOR_Hide_Show_Wall)
     bpy.utils.unregister_class(OPERATOR_Add_Obstacle)
     bpy.utils.unregister_class(OPERATOR_Add_Floor_Obstacle)
     bpy.utils.unregister_class(OPERATOR_Build_Room)
