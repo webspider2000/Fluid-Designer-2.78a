@@ -334,7 +334,7 @@ class OPS_add_camera(Operator):
         bpy.ops.object.camera_add(view_align=False)
         camera = context.active_object
         bpy.ops.view3d.camera_to_view()
-        camera.data.clip_start = 0
+        camera.data.clip_start = unit.inch(1)
         camera.data.clip_end = 9999
         camera.data.ortho_scale = 200.0
         return {'FINISHED'}
