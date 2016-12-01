@@ -211,6 +211,15 @@ class TEXT_MT_text(Menu):
             layout.operator("text.run_script")
 
 
+class TEXT_MT_fluid_scripts_py(Menu):
+    bl_label = "Fluid"
+
+    def draw(self, context):
+        self.path_menu(bpy.utils.script_paths("templates_fluid"),
+                       "text.open",
+                       {"internal": True},
+                       )
+
 class TEXT_MT_templates_py(Menu):
     bl_label = "Python"
 
@@ -236,6 +245,7 @@ class TEXT_MT_templates(Menu):
 
     def draw(self, context):
         layout = self.layout
+        layout.menu("TEXT_MT_fluid_scripts_py")
         layout.menu("TEXT_MT_templates_py")
         layout.menu("TEXT_MT_templates_osl")
 
