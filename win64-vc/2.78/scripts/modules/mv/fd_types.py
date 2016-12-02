@@ -1362,6 +1362,7 @@ class Wall(Assembly):
         obj_mesh.name = "Wall Mesh"
         obj_mesh.mv.type = 'NONE'
         obj_mesh.draw_type = 'TEXTURED'
+        obj_mesh.hide_render = False
         obj_mesh.hide_select = False
         obj_mesh.cycles_visibility.camera = True
         obj_mesh.cycles_visibility.diffuse = True
