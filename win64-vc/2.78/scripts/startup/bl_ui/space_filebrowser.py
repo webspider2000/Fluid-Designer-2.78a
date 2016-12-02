@@ -126,7 +126,6 @@ class FILEBROWSER_UL_dir(bpy.types.UIList):
 class FILEBROWSER_PT_system_folders(Panel):
     bl_space_type = 'FILE_BROWSER'
     bl_region_type = 'TOOLS'
-    bl_category = "Bookmarks"
     bl_label = "System"
 
     @classmethod
@@ -149,7 +148,6 @@ class FILEBROWSER_PT_system_folders(Panel):
 class FILEBROWSER_PT_system_bookmarks(Panel):
     bl_space_type = 'FILE_BROWSER'
     bl_region_type = 'TOOLS'
-    bl_category = "Bookmarks"
     bl_label = "System Bookmarks"
 
     @classmethod
@@ -191,7 +189,6 @@ class FILEBROWSER_MT_bookmarks_specials(Menu):
 class FILEBROWSER_PT_bookmarks(Panel):
     bl_space_type = 'FILE_BROWSER'
     bl_region_type = 'TOOLS'
-    bl_category = "Bookmarks"
     bl_label = "Bookmarks"
 
     @classmethod
@@ -228,7 +225,6 @@ class FILEBROWSER_PT_bookmarks(Panel):
 class FILEBROWSER_PT_recent_folders(Panel):
     bl_space_type = 'FILE_BROWSER'
     bl_region_type = 'TOOLS'
-    bl_category = "Bookmarks"
     bl_label = "Recent"
 
     @classmethod
