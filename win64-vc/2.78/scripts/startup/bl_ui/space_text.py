@@ -211,7 +211,7 @@ class TEXT_MT_text(Menu):
             layout.operator("text.run_script")
 
 
-class TEXT_MT_fluid_scripts_py(Menu):
+class TEXT_MT_templates_fluid(Menu):
     bl_label = "Fluid"
 
     def draw(self, context):
@@ -245,7 +245,7 @@ class TEXT_MT_templates(Menu):
 
     def draw(self, context):
         layout = self.layout
-        layout.menu("TEXT_MT_fluid_scripts_py")
+        layout.menu("TEXT_MT_templates_fluid")
         layout.menu("TEXT_MT_templates_py")
         layout.menu("TEXT_MT_templates_osl")
 

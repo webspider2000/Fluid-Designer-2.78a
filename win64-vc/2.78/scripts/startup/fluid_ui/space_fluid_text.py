@@ -144,12 +144,7 @@ class MENU_Library_Modules(Menu):
             if ext == '.py':
                 col.operator('fd_scripting_tools.load_library_module',text=filename.replace("_"," "),icon='FILE_TEXT').filepath = os.path.join(script_library_path,file)        
 
-classes = [
-           PANEL_Library_Modules,
-           MENU_Library_Modules,
-           MENU_Library_Module_options,
-           LIST_module_members
-           ]
+classes = []
 
 def register():
     for c in classes:
