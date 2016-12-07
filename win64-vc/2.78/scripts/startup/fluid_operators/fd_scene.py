@@ -1616,7 +1616,7 @@ class OPS_export_mvfd(Operator):
                 self.xml.add_element_with_text(elm_prompt,'Value',self.location(obj_product.location.z))
                 
             elm_parts = self.xml.add_element(elm_product,"Parts")
-            self.write_stl_files_for_product(elm_parts,obj_product,spec_group)
+            self.write_parts_for_product(elm_parts,obj_product,spec_group)
             
             elm_hardware = self.xml.add_element(elm_product,"Hardware")
             self.write_hardware_for_product(elm_hardware,obj_product)
@@ -1766,7 +1766,7 @@ class OPS_export_mvfd(Operator):
                     self.xml.add_element_with_text(elm_item,'ZDimension',self.distance(assembly.obj_z.location.z))                
                     self.xml.add_element_with_text(elm_item,'Comment',comment)
                     elm_parts = self.xml.add_element(elm_item,"Parts")
-                    self.write_stl_files_for_product(elm_parts,assembly.obj_bp,spec_group)
+                    self.write_parts_for_product(elm_parts,assembly.obj_bp,spec_group)
             
             if child.mv.is_cabinet_drawer_box:
                 assembly = fd_types.Assembly(child)
@@ -1782,7 +1782,7 @@ class OPS_export_mvfd(Operator):
                     self.xml.add_element_with_text(elm_item,'ZDimension',self.distance(assembly.obj_z.location.z))                
                     self.xml.add_element_with_text(elm_item,'Comment',assembly.obj_bp.mv.comment)
                     elm_parts = self.xml.add_element(elm_item,"Parts")
-                    self.write_stl_files_for_product(elm_parts,assembly.obj_bp,spec_group)
+                    self.write_parts_for_product(elm_parts,assembly.obj_bp,spec_group)
                     
             self.write_subassemblies_for_product(elm_subassembly, child,spec_group)
             
@@ -1814,12 +1814,12 @@ class OPS_export_mvfd(Operator):
                     self.xml.add_element_with_text(elm_item,'Comment',child.mv.comment)
             self.write_buyout_for_product(elm_buyout, child)
             
-    def write_stl_files_for_product(self,elm_parts,obj_bp,spec_group):
+    def write_parts_for_product(self,elm_parts,obj_bp,spec_group):
         for child in obj_bp.children:
             if child.cabinetlib.type_mesh in {'CUTPART','SOLIDSTOCK','BUYOUT'}:
                 if not child.hide:
-                    self.write_stl_node(elm_parts, child, spec_group)
-            self.write_stl_files_for_product(elm_parts, child, spec_group)
+                    self.write_part_node(elm_parts, child, spec_group)
+            self.write_parts_for_product(elm_parts, child, spec_group)
     
     def get_part_x_location(self,obj,value):
         if obj.parent is None or obj.parent.mv.type_group == 'PRODUCT':
@@ -1839,12 +1839,15 @@ class OPS_export_mvfd(Operator):
         value += obj.parent.location.z
         return self.get_part_z_location(obj.parent,value)
 
-    def write_stl_node(self,node,obj,spec_group):
+    def write_part_node(self,node,obj,spec_group):
         if obj.mv.type == 'BPASSEMBLY':
             assembly = fd_types.Assembly(obj)
         else:
             assembly = fd_types.Assembly(obj.parent)
-        elm_part = self.xml.add_element(node,'Part',assembly.obj_bp.mv.name_object)
+        if obj.type == 'CURVE':
+            elm_part = self.xml.add_element(node,'Part',obj.mv.name_object)
+        else:
+            elm_part = self.xml.add_element(node,'Part',assembly.obj_bp.mv.name_object)
         
         if obj.cabinetlib.type_mesh == 'CUTPART':
             self.xml.add_element_with_text(elm_part,'PartType',"2")
