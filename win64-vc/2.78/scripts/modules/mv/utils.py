@@ -278,7 +278,7 @@ def get_selection_point(context, event, ray_max=10000.0,objects=None,floor=None)
     # get the ray from the viewport and mouse
     view_vector = view3d_utils.region_2d_to_vector_3d(region, rv3d, coord)
     ray_origin = view3d_utils.region_2d_to_origin_3d(region, rv3d, coord)
-    ray_target = ray_origin + (view_vector * ray_max)
+    ray_target = ray_origin + view_vector
 
     def visible_objects_and_duplis():
         """Loop over (object, matrix) pairs (mesh only)"""
@@ -314,9 +314,10 @@ def get_selection_point(context, event, ray_max=10000.0,objects=None,floor=None)
             matrix_inv = matrix.inverted()
             ray_origin_obj = matrix_inv * ray_origin
             ray_target_obj = matrix_inv * ray_target
+            ray_direction_obj = ray_target_obj - ray_origin_obj
     
             # cast the ray
-            success, location, normal, face_index = obj.ray_cast(ray_origin_obj, ray_target_obj)
+            success, location, normal, face_index = obj.ray_cast(ray_origin_obj, ray_direction_obj)
     
             if success:
                 return location, normal, face_index
@@ -326,21 +327,22 @@ def get_selection_point(context, event, ray_max=10000.0,objects=None,floor=None)
             print("ERROR IN obj_ray_cast",obj)
             return None, None, None
             
-    best_length_squared = ray_max * ray_max
-    best_obj = None
+    best_length_squared = -1.0
+    best_obj = None            
     best_hit = scene.cursor_location
+    
     for obj, matrix in visible_objects_and_duplis():
-        if obj.type == 'MESH':
-            if obj.data:
+        if obj.type == 'MESH':    
+            if obj.data:        
                 hit, normal, face_index = obj_ray_cast(obj, matrix)
                 if hit is not None:
                     hit_world = matrix * hit
+                    best_hit = hit_world
                     length_squared = (hit_world - ray_origin).length_squared
-                    if length_squared < best_length_squared:
-                        best_hit = hit_world
+                    if best_obj is None or length_squared < best_length_squared:
                         best_length_squared = length_squared
                         best_obj = obj
-                        
+                     
     return best_hit, best_obj
 
 def get_material_name(obj):
@@ -370,8 +372,9 @@ def get_material_name(obj):
             return  obj.mv.name_object
     
     if obj.cabinetlib.type_mesh == 'SOLIDSTOCK':
-        thickness = str(round(unit.meter_to_active_unit(get_part_thickness(obj)),4))
-        return thickness + " " + obj.mv.solid_stock
+        return obj.mv.solid_stock
+#         thickness = str(round(unit.meter_to_active_unit(get_part_thickness(obj)),4))
+#         return thickness + " " + obj.mv.solid_stock
 
 def get_part_thickness(obj):
     if obj.cabinetlib.type_mesh == 'CUTPART':
