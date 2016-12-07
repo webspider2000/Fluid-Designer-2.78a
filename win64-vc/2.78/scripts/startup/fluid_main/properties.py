@@ -362,7 +362,6 @@ class mvPrompt(bpy.types.PropertyGroup):
         if allow_edit:
             props = row.operator("fd_prompts.delete_prompt",icon='X',text="")
             props.prompt_name = self.name
-            props.data_type = 'OBJECT'
             props.data_name = data.name
         
     def add_enum_item(self,Name):
