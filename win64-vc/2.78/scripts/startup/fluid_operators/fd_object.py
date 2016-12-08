@@ -493,6 +493,7 @@ class OPS_add_room_lamp(Operator):
         smallest_x = 0
         smallest_y = 0
         wall_groups = []
+        height = 0
         for obj in context.visible_objects:
             if obj.mv.type == 'BPWALL':
                 wall_groups.append(fd_types.Wall(obj))
@@ -538,6 +539,10 @@ class OPS_add_room_lamp(Operator):
         obj_lamp.data.shape = 'RECTANGLE'
         obj_lamp.data.size = length + unit.inch(20)
         obj_lamp.data.size_y = width + unit.inch(20)
+        for node in obj_lamp.data.node_tree.nodes:
+            if node.type == 'EMISSION':
+                node.inputs[1].default_value = max(unit.meter_to_active_unit(largest_x),
+                                                   unit.meter_to_active_unit(largest_y))
         return {'FINISHED'}
     
 class OPS_add_machine_token(Operator):
