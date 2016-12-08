@@ -293,12 +293,15 @@ class OPS_draw_walls(Operator):
         context.area.tag_redraw()
         selected_point, selected_obj = utils.get_selection_point(context,event,objects=[self.drawing_plane]) #Pass in Drawing Plane
         bpy.ops.object.select_all(action='DESELECT')
+        self.wall.obj_y.location.y = bpy.context.scene.mv.default_wall_depth
         if selected_obj:
             if event.ctrl:
                 self.wall.obj_bp.constraints.clear()
                 self.wall.obj_bp.location.x = selected_point[0]
                 self.wall.obj_bp.location.y = selected_point[1]
                 self.wall.obj_bp.location.z = 0
+                self.wall.obj_y.location.y = 0
+                self.wall.obj_x.location.x = 0
                 self.starting_point = (self.wall.obj_bp.location.x, self.wall.obj_bp.location.y, 0)
             else:
                 selected_obj.select = True
@@ -772,7 +775,7 @@ class OPS_delete_selected_assembly(Operator):
     @classmethod
     def poll(cls, context):
         obj = context.active_object
-        obj_bp = utils.get_parent_assembly_bp(obj)
+        obj_bp = utils.get_assembly_bp(obj)
         if obj_bp:
             return True
         else:
@@ -783,7 +786,7 @@ class OPS_delete_selected_assembly(Operator):
             return bpy.data.objects[self.object_name]
         else:
             obj = context.object
-            return utils.get_parent_assembly_bp(obj)
+            return utils.get_assembly_bp(obj)
     
     def get_boolean_objects(self,obj_bp,bool_list):
         for child in obj_bp.children:
